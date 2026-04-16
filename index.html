@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumee — 讓主畫面變成你的風格</title>
+  <meta name="description" content="照片小工具、精美主題、日常工具。讓你的 iPhone 桌面變得有溫度。">
+  <link rel="icon" type="image/png" href="https://charonyuresume.vercel.app/lumee/appicon.png">
+  <meta property="og:title" content="Lumee — 讓主畫面變成你的風格">
+  <meta property="og:description" content="照片小工具、精美主題、日常工具。讓你的 iPhone 桌面變得有溫度。">
+  <meta property="og:image" content="https://charonyuresume.vercel.app/lumee/appicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              gold: '#C9952C',
+              warm: '#E8985A',
+              cream: '#F5F0E8',
+              dark: '#3D2E1A',
+              mid: '#8B6914',
+              light: '#FFF8ED',
+              rose: '#FBCFE8',
+              lavender: '#C4B5FD',
+            }
+          },
+          fontFamily: {
+            heading: ['Fredoka', 'Noto Sans TC', 'sans-serif'],
+            body: ['Noto Sans TC', 'Nunito', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Noto Sans TC', 'Nunito', sans-serif; }
+    .hero-bg { background: linear-gradient(165deg, #FFF8ED 0%, #F5F0E8 40%, #FCEBD4 70%, #F5F0E8 100%); }
+    .phone-mockup {
+      width: 260px; height: 520px; border-radius: 40px; background: #1a1a1a; padding: 12px;
+      box-shadow: 0 25px 60px rgba(201,149,44,0.2), 0 8px 24px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .phone-screen { width: 100%; height: 100%; border-radius: 30px; overflow: hidden; position: relative; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+    .float-anim { animation: float 4s ease-in-out infinite; }
+    .glow-gold { box-shadow: 0 0 40px rgba(201,149,44,0.25), 0 0 80px rgba(201,149,44,0.1); }
+    .feature-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(201,149,44,0.15); }
+    .theme-pill { transition: transform 0.2s ease; }
+    .theme-pill:hover { transform: scale(1.05); }
+    .reveal { opacity:0; transform:translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    @media(prefers-reduced-motion:reduce) {
+      .float-anim{animation:none} .reveal{transition:none;opacity:1;transform:none}
+      .feature-card,.theme-pill{transition:none}
+    }
+    .widget-item {
+      background: linear-gradient(135deg, #fff 0%, #FFF8ED 100%);
+      border: 1px solid rgba(201,149,44,0.12);
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .widget-item:hover { transform: translateY(-2px); border-color: rgba(201,149,44,0.3); }
+    .btn-primary { background: linear-gradient(135deg, #C9952C 0%, #E8985A 100%); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,149,44,0.35); }
+    .themes-scroll::-webkit-scrollbar { height: 4px; }
+    .themes-scroll::-webkit-scrollbar-track { background: transparent; }
+    .themes-scroll::-webkit-scrollbar-thumb { background: #C9952C40; border-radius: 4px; }
+    /* Floating sticker decorations */
+    .sticker-float { position:absolute; pointer-events:none; }
+    @keyframes sway { 0%,100%{transform:rotate(-3deg) translateY(0)} 50%{transform:rotate(3deg) translateY(-8px)} }
+    .sway { animation: sway 5s ease-in-out infinite; }
+    .sway-delay { animation: sway 5s ease-in-out 2s infinite; }
+    @media(prefers-reduced-motion:reduce) { .sway,.sway-delay{animation:none} }
+  </style>
+</head>
+<body class="bg-brand-light text-brand-dark antialiased">
+
+  <!-- NAV -->
+  <nav class="fixed top-4 left-4 right-4 z-50 bg-white/80 backdrop-blur-xl rounded-2xl border border-brand-gold/10 shadow-sm px-6 py-3 flex items-center justify-between max-w-5xl mx-auto">
+    <a href="index.html" class="flex items-center gap-3 no-underline cursor-pointer">
+      <img src="https://charonyuresume.vercel.app/lumee/appicon.png" alt="Lumee" width="36" height="36" class="rounded-xl shadow-sm">
+      <span class="font-heading font-bold text-lg text-brand-dark">Lumee</span>
+    </a>
+    <div class="hidden sm:flex items-center gap-6 text-sm font-semibold text-brand-dark/70">
+      <a href="#features" class="hover:text-brand-gold transition-colors cursor-pointer">功能</a>
+      <a href="#themes" class="hover:text-brand-gold transition-colors cursor-pointer">主題</a>
+      <a href="#widgets" class="hover:text-brand-gold transition-colors cursor-pointer">工具</a>
+      <a href="roadmap.html" class="hover:text-brand-gold transition-colors cursor-pointer">Roadmap</a>
+    </div>
+    <a href="https://apps.apple.com/tw/app/id6761321482" target="_blank" rel="noopener" class="btn-primary text-white font-bold text-sm px-5 py-2 rounded-xl cursor-pointer inline-block no-underline">
+      下載
+    </a>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero-bg min-h-screen flex items-center pt-24 pb-16 px-6 overflow-hidden">
+    <div class="max-w-5xl mx-auto w-full flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+      <div class="flex-1 text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 bg-brand-gold/10 border border-brand-gold/20 rounded-full px-4 py-1.5 mb-6">
+          <span class="w-2 h-2 rounded-full bg-brand-gold"></span>
+          <span class="text-sm font-semibold text-brand-gold">照片小工具 &middot; 打造你的桌面</span>
+        </div>
+        <h1 class="font-heading font-bold text-4xl sm:text-5xl lg:text-6xl text-brand-dark leading-tight mb-6">
+          讓你的主畫面<br>
+          <span class="bg-gradient-to-r from-brand-gold to-brand-warm bg-clip-text text-transparent">變得有溫度。</span>
+        </h1>
+        <p class="font-body text-lg text-brand-dark/60 max-w-md mx-auto lg:mx-0 mb-8 leading-relaxed">
+          把喜歡的照片、心情，還有你的小動物，放在每天都會看到的地方。
+        </p>
+        <div class="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start">
+          <a href="https://apps.apple.com/tw/app/id6761321482" target="_blank" rel="noopener" class="cursor-pointer inline-flex items-center gap-3 bg-brand-dark hover:bg-brand-dark/90 text-white rounded-2xl px-6 py-3.5 transition-colors no-underline">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+            </svg>
+            <div class="text-left">
+              <div class="text-[10px] leading-none opacity-80">Download on the</div>
+              <div class="text-lg font-bold leading-tight font-heading">App Store</div>
+            </div>
+          </a>
+          <span class="text-sm text-brand-dark/40 font-semibold">免費下載 &middot; iOS 17+</span>
+        </div>
+      </div>
+
+      <!-- Phone Mockup -->
+      <div class="flex-shrink-0 relative float-anim">
+        <!-- Floating stickers around phone -->
+        <img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E6%9F%B4%E7%8A%AC/%E6%9F%B4%E7%8A%AC_%E5%9D%90%E4%B8%8B.png" alt="柴犬" width="52" height="52" class="sticker-float sway -top-6 -left-10 drop-shadow-lg">
+        <img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E8%B2%93%E5%92%AA/%E8%B2%93%E5%92%AA_%E6%92%92%E5%AC%8C.png" alt="貓咪" width="44" height="44" class="sticker-float sway-delay -bottom-4 -left-8 drop-shadow-lg">
+        <img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E5%B9%BD%E9%9D%88/%E5%B9%BD%E9%9D%88_%E9%96%83%E4%BA%AE.png" alt="幽靈" width="40" height="40" class="sticker-float sway -top-2 -right-8 drop-shadow-lg">
+        <img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E6%84%9B%E5%BF%83.png" alt="愛心" width="28" height="28" class="sticker-float sway-delay bottom-20 -right-6 drop-shadow-lg">
+
+        <div class="phone-mockup glow-gold">
+          <div class="phone-screen bg-gradient-to-br from-brand-cream to-white">
+            <div class="p-4 pt-10 space-y-3">
+              <!-- Status bar -->
+              <div class="flex justify-between items-center px-1 mb-4">
+                <span class="text-[10px] font-bold text-brand-dark/50">9:41</span>
+                <div class="flex gap-1">
+                  <div class="w-4 h-2 rounded-sm bg-brand-dark/20"></div>
+                  <div class="w-4 h-2 rounded-sm bg-brand-dark/20"></div>
+                </div>
+              </div>
+              <!-- Photo widget with real sticker -->
+              <div class="w-full aspect-[2/1.1] rounded-2xl bg-gradient-to-br from-brand-warm/40 to-brand-gold/25 border border-brand-gold/20 flex items-end justify-between relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-t from-brand-dark/30 via-transparent to-transparent"></div>
+                <div class="relative z-10 p-3">
+                  <div class="text-[10px] font-bold text-white/90">和你在一起的日子</div>
+                  <div class="text-[8px] text-white/60">2025.09.14</div>
+                </div>
+                <img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E6%9F%B4%E7%8A%AC/%E6%9F%B4%E7%8A%AC_%E6%84%9B%E5%BF%83.png" alt="柴犬愛心" width="42" height="42" class="relative z-10 mb-1 mr-2 drop-shadow-md">
+              </div>
+              <!-- Weather + Countdown -->
+              <div class="flex gap-3">
+                <div class="flex-1 aspect-square rounded-2xl bg-gradient-to-br from-sky-100 to-blue-50 border border-sky-200/50 p-3 flex flex-col justify-between">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5B86E5" stroke-width="2"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/><circle cx="12" cy="12" r="4"/></svg>
+                  <div>
+                    <div class="text-[18px] font-bold font-heading text-brand-dark">26°</div>
+                    <div class="text-[8px] text-brand-dark/50 font-semibold">台北・晴天</div>
+                  </div>
+                </div>
+                <div class="flex-1 aspect-square rounded-2xl bg-gradient-to-br from-brand-rose/30 to-purple-50 border border-brand-rose/30 p-3 flex flex-col justify-between">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C4B5FD" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                  <div>
+                    <div class="text-[18px] font-bold font-heading text-brand-dark">14</div>
+                    <div class="text-[8px] text-brand-dark/50 font-semibold">天後生日</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Todo widget -->
+              <div class="w-full rounded-2xl bg-white border border-brand-gold/10 p-3 space-y-2">
+                <div class="text-[9px] font-bold text-brand-gold tracking-wider">今日待辦</div>
+                <div class="flex items-center gap-2">
+                  <div class="w-3.5 h-3.5 rounded-full border-2 border-brand-gold/40"></div>
+                  <span class="text-[10px] text-brand-dark/70">寄包裹給媽媽</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-3.5 h-3.5 rounded-full bg-brand-gold/30 flex items-center justify-center">
+                    <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><path d="M20 6L9 17l-5-5"/></svg>
+                  </div>
+                  <span class="text-[10px] text-brand-dark/40 line-through">晨跑 30 分鐘</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <div class="w-3.5 h-3.5 rounded-full bg-brand-gold/30 flex items-center justify-center">
+                    <svg width="7" height="7" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="4"><path d="M20 6L9 17l-5-5"/></svg>
+                  </div>
+                  <span class="text-[10px] text-brand-dark/40 line-through">買咖啡豆</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="absolute -top-4 -right-4 w-20 h-20 bg-brand-gold/10 rounded-full blur-2xl"></div>
+        <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-brand-warm/10 rounded-full blur-2xl"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="py-24 px-6 bg-white">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-16 reveal">
+        <span class="text-sm font-bold text-brand-gold tracking-widest">功能特色</span>
+        <h2 class="font-heading font-bold text-3xl sm:text-4xl text-brand-dark mt-3 mb-4">你的桌面，什麼都有</h2>
+        <p class="text-brand-dark/50 max-w-lg mx-auto">從珍藏回憶到日常工具，Lumee 把一切美好放在你的主畫面。</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="feature-card bg-brand-light rounded-2xl p-6 border border-brand-gold/8 reveal cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-gold to-brand-warm flex items-center justify-center mb-4">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-brand-dark mb-2">照片小工具</h3>
+          <p class="text-sm text-brand-dark/50 leading-relaxed">把喜歡的照片變成桌面 Widget，重要的瞬間每天都能看見。</p>
+        </div>
+        <div class="feature-card bg-brand-light rounded-2xl p-6 border border-brand-gold/8 reveal cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-lavender to-purple-300 flex items-center justify-center mb-4">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-brand-dark mb-2">主題包</h3>
+          <p class="text-sm text-brand-dark/50 leading-relaxed">柴犬、貓咪、可愛角色、幽靈——一鍵套用完整主題風格。</p>
+        </div>
+        <div class="feature-card bg-brand-light rounded-2xl p-6 border border-brand-gold/8 reveal cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-rose to-pink-300 flex items-center justify-center mb-4">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-brand-dark mb-2">寵物陪伴</h3>
+          <p class="text-sm text-brand-dark/50 leading-relaxed">可愛小動物貼圖，讓桌面多一點生活感與溫度。</p>
+        </div>
+        <div class="feature-card bg-brand-light rounded-2xl p-6 border border-brand-gold/8 reveal cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-sky-400 to-blue-500 flex items-center justify-center mb-4">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-brand-dark mb-2">Widget Hub</h3>
+          <p class="text-sm text-brand-dark/50 leading-relaxed">天氣、倒數日、步數、匯率、股市、星座、世界時鐘——一站搞定。</p>
+        </div>
+        <div class="feature-card bg-brand-light rounded-2xl p-6 border border-brand-gold/8 reveal cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mb-4">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 18h.01"/></svg>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-brand-dark mb-2">鎖定畫面小工具</h3>
+          <p class="text-sm text-brand-dark/50 leading-relaxed">天氣、倒數、步數等即時資訊，不解鎖也能看見。</p>
+        </div>
+        <div class="feature-card bg-brand-light rounded-2xl p-6 border border-brand-gold/8 reveal cursor-pointer">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mb-4">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3 class="font-heading font-bold text-lg text-brand-dark mb-2">熱門話題</h3>
+          <p class="text-sm text-brand-dark/50 leading-relaxed">台灣熱搜、新聞頭條、Reddit 熱門——即時掌握最新資訊。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- THEMES -->
+  <section id="themes" class="py-24 px-6 hero-bg overflow-hidden">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-14 reveal">
+        <span class="text-sm font-bold text-brand-gold tracking-widest">主題風格</span>
+        <h2 class="font-heading font-bold text-3xl sm:text-4xl text-brand-dark mt-3 mb-4">找到你的風格</h2>
+        <p class="text-brand-dark/50 max-w-lg mx-auto">從溫暖到極簡，選一個符合你心情的主題，一鍵套用。</p>
+      </div>
+      <div class="flex gap-5 overflow-x-auto pb-4 themes-scroll snap-x snap-mandatory -mx-6 px-6 reveal">
+        <div class="theme-pill flex-shrink-0 w-56 rounded-3xl overflow-hidden snap-start cursor-pointer" style="background:#F7F5F2;border:2px solid #E8985A30;">
+          <div class="p-5 pb-3"><div class="flex gap-2 mb-3"><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-200 to-orange-100 flex items-center justify-center"><img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/icons/%E5%8B%95%E7%89%A9/%E6%9F%B4%E7%8A%AC%E8%87%89.png" alt="柴犬" width="40" height="40"></div><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-100 to-yellow-50 border border-amber-200/50 flex items-center justify-center"><img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E6%9F%B4%E7%8A%AC/%E6%9F%B4%E7%8A%AC_%E7%8E%A9%E7%90%83.png" alt="柴犬玩球" width="36" height="36"></div></div><div class="w-full h-10 rounded-xl bg-gradient-to-r from-amber-100 to-orange-50 border border-amber-200/30"></div></div>
+          <div class="px-5 pb-5 pt-2"><h4 class="font-heading font-bold text-brand-dark">柴犬主題</h4><p class="text-xs text-brand-dark/40 mt-0.5">溫暖 &middot; 療癒 &middot; 俏皮</p><div class="flex gap-1.5 mt-3"><div class="w-5 h-5 rounded-full" style="background:#E8985A"></div><div class="w-5 h-5 rounded-full" style="background:#F7F5F2;border:1px solid #ddd"></div><div class="w-5 h-5 rounded-full" style="background:#F0EDE8"></div></div></div>
+        </div>
+        <div class="theme-pill flex-shrink-0 w-56 rounded-3xl overflow-hidden snap-start cursor-pointer" style="background:#F9FAFB;border:2px solid #C4B5FD30;">
+          <div class="p-5 pb-3"><div class="flex gap-2 mb-3"><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-100 to-violet-50 flex items-center justify-center"><img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/icons/%E5%8B%95%E7%89%A9/%E5%8F%AF%E6%84%9B%E8%B2%93%E8%87%89.png" alt="貓咪" width="40" height="40"></div><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-50 to-indigo-50 border border-purple-200/50 flex items-center justify-center"><img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E8%B2%93%E5%92%AA/%E8%B2%93%E5%92%AA_%E7%8E%A9%E6%AF%9B%E7%B7%9A.png" alt="貓咪玩毛線" width="36" height="36"></div></div><div class="w-full h-10 rounded-xl bg-gradient-to-r from-purple-50 to-violet-50 border border-purple-200/30"></div></div>
+          <div class="px-5 pb-5 pt-2"><h4 class="font-heading font-bold text-brand-dark">貓咪主題</h4><p class="text-xs text-brand-dark/40 mt-0.5">乾淨 &middot; 極簡 &middot; 柔和</p><div class="flex gap-1.5 mt-3"><div class="w-5 h-5 rounded-full" style="background:#C4B5FD"></div><div class="w-5 h-5 rounded-full" style="background:#F9FAFB;border:1px solid #ddd"></div><div class="w-5 h-5 rounded-full" style="background:#E5E7EB"></div></div></div>
+        </div>
+        <div class="theme-pill flex-shrink-0 w-56 rounded-3xl overflow-hidden snap-start cursor-pointer" style="background:#F6F3EF;border:2px solid #FBCFE830;">
+          <div class="p-5 pb-3"><div class="flex gap-2 mb-3"><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-100 to-rose-50 flex items-center justify-center"><img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/icons/%E5%8B%95%E7%89%A9/%E5%8F%AF%E6%84%9B%E5%80%89%E9%BC%A0%E8%87%89.png" alt="倉鼠" width="40" height="40"></div><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-50 to-pink-50 border border-pink-200/50 flex items-center justify-center"><img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/icons/%E5%8B%95%E7%89%A9/%E5%8F%AF%E6%84%9B%E8%B1%AC%E8%87%89.png" alt="小豬" width="36" height="36"></div></div><div class="w-full h-10 rounded-xl bg-gradient-to-r from-pink-50 to-rose-50 border border-pink-200/30"></div></div>
+          <div class="px-5 pb-5 pt-2"><h4 class="font-heading font-bold text-brand-dark">可愛表情</h4><p class="text-xs text-brand-dark/40 mt-0.5">繽紛 &middot; 甜美 &middot; 歡樂</p><div class="flex gap-1.5 mt-3"><div class="w-5 h-5 rounded-full" style="background:#FBCFE8"></div><div class="w-5 h-5 rounded-full" style="background:#fff;border:1px solid #ddd"></div><div class="w-5 h-5 rounded-full" style="background:#F6F3EF"></div></div></div>
+        </div>
+        <div class="theme-pill flex-shrink-0 w-56 rounded-3xl overflow-hidden snap-start cursor-pointer" style="background:#F5F3FF;border:2px solid #8B5CF630;">
+          <div class="p-5 pb-3"><div class="flex gap-2 mb-3"><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-200 to-purple-100 flex items-center justify-center"><img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E5%B9%BD%E9%9D%88/%E5%B9%BD%E9%9D%88_%E9%96%8B%E5%BF%83.png" alt="幽靈開心" width="40" height="40"></div><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-50 to-indigo-100 border border-violet-200/50 flex items-center justify-center"><img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E5%B9%BD%E9%9D%88/%E5%B9%BD%E9%9D%88_%E8%B7%B3%E8%88%9E.png" alt="幽靈跳舞" width="36" height="36"></div></div><div class="w-full h-10 rounded-xl bg-gradient-to-r from-violet-100 to-purple-50 border border-violet-200/30"></div></div>
+          <div class="px-5 pb-5 pt-2"><h4 class="font-heading font-bold text-brand-dark">幽靈主題</h4><p class="text-xs text-brand-dark/40 mt-0.5">夢幻 &middot; 空靈 &middot; 柔軟</p><div class="flex gap-1.5 mt-3"><div class="w-5 h-5 rounded-full" style="background:#8B5CF6"></div><div class="w-5 h-5 rounded-full" style="background:#F5F3FF;border:1px solid #ddd"></div><div class="w-5 h-5 rounded-full" style="background:#EDE9FE"></div></div></div>
+        </div>
+        <div class="theme-pill flex-shrink-0 w-56 rounded-3xl overflow-hidden snap-start cursor-pointer" style="background:#FFF9F5;border:2px solid #F9A8D430;">
+          <div class="p-5 pb-3"><div class="flex gap-2 mb-3"><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-200 to-red-100 flex items-center justify-center"><img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E6%84%9B%E5%BF%83.png" alt="愛心" width="36" height="36"></div><div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-50 to-rose-50 border border-pink-200/50 flex items-center justify-center"><img src="https://pub-c54e74352c804aeca33e003f2539764c.r2.dev/stickers/%E9%9B%99%E6%84%9B%E5%BF%83.png" alt="雙愛心" width="32" height="32"></div></div><div class="w-full h-10 rounded-xl bg-gradient-to-r from-rose-100 to-pink-50 border border-pink-200/30"></div></div>
+          <div class="px-5 pb-5 pt-2"><h4 class="font-heading font-bold text-brand-dark">戀愛主題</h4><p class="text-xs text-brand-dark/40 mt-0.5">浪漫 &middot; 溫暖 &middot; 甜蜜</p><div class="flex gap-1.5 mt-3"><div class="w-5 h-5 rounded-full" style="background:#F9A8D4"></div><div class="w-5 h-5 rounded-full" style="background:#FFF9F5;border:1px solid #ddd"></div><div class="w-5 h-5 rounded-full" style="background:#FFF1EB"></div></div></div>
+        </div>
+        <div class="theme-pill flex-shrink-0 w-56 rounded-3xl overflow-hidden snap-start cursor-pointer" style="background:linear-gradient(135deg,#f0f0f0,#e8e8e8);border:2px solid #00000010;">
+          <div class="p-5 pb-3"><div class="flex gap-2 mb-3"><div class="w-16 h-16 rounded-2xl bg-white/60 backdrop-blur border border-white/40"></div><div class="w-16 h-16 rounded-2xl bg-white/40 backdrop-blur border border-white/30"></div></div><div class="w-full h-10 rounded-xl bg-white/50 backdrop-blur border border-white/30"></div></div>
+          <div class="px-5 pb-5 pt-2"><h4 class="font-heading font-bold text-brand-dark">Liquid Glass</h4><p class="text-xs text-brand-dark/40 mt-0.5">現代 &middot; 透明 &middot; 簡潔</p><div class="flex gap-1.5 mt-3"><div class="w-5 h-5 rounded-full bg-white/80 border border-gray-300"></div><div class="w-5 h-5 rounded-full bg-gray-100 border border-gray-200"></div><div class="w-5 h-5 rounded-full bg-gray-200"></div></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WIDGET HUB -->
+  <section id="widgets" class="py-24 px-6 bg-white">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center mb-14 reveal">
+        <span class="text-sm font-bold text-brand-gold tracking-widest">Widget Hub</span>
+        <h2 class="font-heading font-bold text-3xl sm:text-4xl text-brand-dark mt-3 mb-4">不只是小工具</h2>
+        <p class="text-brand-dark/50 max-w-lg mx-auto">你每天會用到的功能，全部搭配主題風格呈現。</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 reveal">
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-sky-100 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B86E5" stroke-width="2" stroke-linecap="round"><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2"/><circle cx="12" cy="12" r="4"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">天氣</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-red-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">倒數日</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-emerald-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">步數</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-amber-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6"/><path d="M16 2h6v6"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">匯率</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-violet-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">世界時鐘</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-indigo-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6366F1" stroke-width="2" stroke-linecap="round"><path d="M12 3l1.912 5.813L20 10l-4.764 3.458L17 19l-5-3.5L7 19l1.764-5.542L4 10l6.088-1.187z"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">星座運勢</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-green-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">股市行情</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-rose-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F43F5E" stroke-width="2" stroke-linecap="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">熱門話題</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-orange-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F97316" stroke-width="2" stroke-linecap="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><path d="M14 2v6h6"/><path d="M16 13H8M16 17H8M10 9H8"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">心情語錄</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-cyan-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06B6D4" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">每日日曆</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-teal-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#14B8A6" stroke-width="2" stroke-linecap="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">待辦事項</span>
+        </div>
+        <div class="widget-item rounded-2xl p-4 text-center cursor-pointer">
+          <div class="w-10 h-10 mx-auto mb-3 rounded-xl bg-yellow-50 flex items-center justify-center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#EAB308" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l3 3"/></svg></div>
+          <span class="font-heading font-semibold text-sm text-brand-dark">組間計時</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STICKER ROW -->
+  <section class="py-10 px-6 hero-bg overflow-hidden">
+    <div class="flex justify-center items-center gap-4 sm:gap-6">
+      <img src="https://charonyuresume.vercel.app/lumee/pet_shiba.png" alt="柴犬" width="44" height="44" class="opacity-70 drop-shadow-sm hover:opacity-100 hover:scale-110 transition-all cursor-pointer">
+      <img src="https://charonyuresume.vercel.app/lumee/pet_cat_orange.png" alt="貓咪" width="44" height="44" class="opacity-70 drop-shadow-sm hover:opacity-100 hover:scale-110 transition-all cursor-pointer">
+      <img src="https://charonyuresume.vercel.app/lumee/pet_hamster.png" alt="倉鼠" width="44" height="44" class="opacity-70 drop-shadow-sm hover:opacity-100 hover:scale-110 transition-all cursor-pointer">
+      <img src="https://charonyuresume.vercel.app/lumee/pet_corgi.png" alt="柯基" width="44" height="44" class="opacity-70 drop-shadow-sm hover:opacity-100 hover:scale-110 transition-all cursor-pointer">
+      <img src="https://charonyuresume.vercel.app/lumee/pet_poodle.png" alt="貴賓" width="44" height="44" class="opacity-70 drop-shadow-sm hover:opacity-100 hover:scale-110 transition-all cursor-pointer">
+    </div>
+  </section>
+
+  <!-- QUOTE -->
+  <section class="py-20 px-6 hero-bg">
+    <div class="max-w-3xl mx-auto text-center reveal">
+      <div class="flex justify-center gap-1 mb-4">
+        <svg class="w-6 h-6 text-brand-gold" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="w-6 h-6 text-brand-gold" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="w-6 h-6 text-brand-gold" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="w-6 h-6 text-brand-gold" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        <svg class="w-6 h-6 text-brand-gold" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+      </div>
+      <blockquote class="font-heading text-2xl sm:text-3xl font-bold text-brand-dark mb-4 leading-snug">
+        「讓你的桌面變得有溫度」
+      </blockquote>
+      <p class="text-brand-dark/50 text-lg mb-2">Lumee 讓桌面不只是工具，而是每天陪著你的畫面。</p>
+      <p class="text-brand-dark/30 text-sm">App Store 免費下載 &middot; 可升級 Lumee Pro</p>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD CTA -->
+  <section class="py-24 px-6 bg-white">
+    <div class="max-w-3xl mx-auto text-center reveal">
+      <img src="https://charonyuresume.vercel.app/lumee/appicon.png" alt="Lumee" width="80" height="80" class="mx-auto mb-8 rounded-3xl shadow-lg glow-gold">
+      <h2 class="font-heading font-bold text-3xl sm:text-4xl text-brand-dark mb-4">現在開始打造你的主畫面</h2>
+      <p class="text-brand-dark/50 text-lg mb-8 max-w-md mx-auto">讓手機每天都更好用。免費下載，可選擇升級 Lumee Pro。</p>
+      <a href="https://apps.apple.com/tw/app/id6761321482" target="_blank" rel="noopener" class="cursor-pointer inline-flex items-center gap-3 bg-brand-dark hover:bg-brand-dark/90 text-white rounded-2xl px-8 py-4 transition-colors no-underline shadow-lg">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        <div class="text-left">
+          <div class="text-[10px] leading-none opacity-80">Download on the</div>
+          <div class="text-xl font-bold leading-tight font-heading">App Store</div>
+        </div>
+      </a>
+      <p class="text-sm text-brand-dark/30 mt-4">需要 iOS 17+ &middot; Pro 每月 NT$65</p>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-12 px-6 bg-brand-cream/50 border-t border-brand-gold/10">
+    <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+      <a href="index.html" class="flex items-center gap-3 no-underline">
+        <img src="https://charonyuresume.vercel.app/lumee/appicon.png" alt="Lumee" width="32" height="32" class="rounded-lg shadow-sm">
+        <span class="font-heading font-bold text-brand-dark">Lumee</span>
+        <span class="text-sm text-brand-dark/30">&copy; 2025</span>
+      </a>
+      <div class="flex items-center gap-6 text-sm font-semibold text-brand-dark/50">
+        <a href="privacy.html" class="hover:text-brand-gold transition-colors cursor-pointer">隱私權政策</a>
+        <a href="terms.html" class="hover:text-brand-gold transition-colors cursor-pointer">使用條款</a>
+        <a href="roadmap.html" class="hover:text-brand-gold transition-colors cursor-pointer">Roadmap</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
